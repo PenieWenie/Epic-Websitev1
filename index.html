@@ -544,7 +544,7 @@
     </div>
     <div class="construction-message" id="constructionMessage"></div>
     <script>
-        //css logic, 
+        //JAVASCRIPT logic, 
         //wip ai shooting and shrapnel upgrades
         //major bugs, bomb/captcha will break site completley if left open and unsolved for too long. prev timer is not being deleted. ETA, when i am interested
         //hover over and clicking noises needed for qol
@@ -735,7 +735,7 @@
                 const happyFrequencies = [261.63, 329.63, 392.00]; // C4, E4, G4
                 happyFrequencies.forEach(freq => {
                     const oscillator = audioCtx.createOscillator();
-                    oscillator.type = 'triangle'; // Smooth, happy sound
+                    oscillator.type = 'triangle'; //happy sound
                     oscillator.frequency.setValueAtTime(freq, audioCtx.currentTime);
                     oscillator.connect(audioCtx.destination);
                     oscillator.start();
@@ -759,11 +759,11 @@
                 const sadFrequencies = [220.00, 261.63, 329.63]; // A3, C4, E4
                 sadFrequencies.forEach(freq => {
                     const oscillator = audioCtx.createOscillator();
-                    oscillator.type = 'triangle'; // Smooth, somber sound
+                    oscillator.type = 'triangle'; //FAILED SOUND
                     oscillator.frequency.setValueAtTime(freq, audioCtx.currentTime);
                     oscillator.connect(audioCtx.destination);
                     oscillator.start();
-                    oscillator.stop(audioCtx.currentTime + 0.5); // 0.5-second chord
+                    oscillator.stop(audioCtx.currentTime + 0.5);
                 });
 
                 if (isBombCaptcha) {
@@ -811,7 +811,6 @@
                 boomClone.volume = 0.8;
                 boomClone.play().catch(err => console.log("Sound blocked:", err));
             }
-            //beep boop for numpad
         });
 
         // Image explosions 
@@ -834,7 +833,6 @@
         function spawnTurret() {
             let turret = document.createElement('div');
             turret.className = 'turret';
-            // Position in top-left: account for turret size and padding
             turret.style.left = `25px`; //left edge
             turret.style.top = `25px`; //top ege
             document.body.appendChild(turret);
