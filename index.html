@@ -518,6 +518,12 @@
                 filter: hue-rotate(360deg);
             }
         }
+
+        #cat img {
+            width: 100px;
+            height: 100px;
+            transition: animation-play-state 0.1s;
+        }
     </style>
 </head>
 
@@ -564,6 +570,9 @@
         <a href="https://www.hitwebcounter.com" target="_blank">
             <img src="https://hitwebcounter.com/counter/counter.php?page=19407135&style=0034&nbdigits=5&type=page&initCount=0"
                 title="Counter Widget" Alt="Visit counter For Websites" border="0" /></a>
+        <div id="cat" style="position: fixed; top: 96px; left: 96px; z-index: 200; cursor: pointer;">
+            <img src="images/spin.png" alt="Petable Cat" style="width: 100px; height: 100px;">
+        </div>
         <h3>Total Vistors</h3>
         <h1>ABOUT ME</h1>
         <p>NAME: JUSTAN</p>
@@ -598,6 +607,27 @@
         //major bugs, bomb/captcha will break site completley if left open and unsolved for too long. prev timer is not being deleted. ETA, when i am interested
         //hover over and clicking noises needed for qol
 
+
+        // Petable cat logic
+        const cat = document.getElementById('cat');
+        const catImg = cat.querySelector('img');
+        const meowSound = new Audio('audio/meow.mp3');
+        meowSound.preload = 'auto';
+        meowSound.volume = 1.0; // Max volume
+
+        cat.addEventListener('click', () => {
+            // Switch to GIF and play meow
+            catImg.src = 'images/spin.gif';
+            meowSound.play().catch(err => console.log("Meow sound blocked:", err));
+
+            // Revert to static image after 3 seconds
+            setTimeout(() => {
+                catImg.src = 'images/spin.png';
+                meowSound.pause();
+                meowSound.currentTime = 0;
+            }, 3000);
+        });
+
         // Weed button logic
         const weedButton = document.getElementById('weedButton');
         const colorFilter = document.createElement('div');
@@ -610,8 +640,8 @@
 
         let isWeedActive = false;
 
-         //BOOM and stuff, scree shake on click (removed), check if numpad is open, to avoid anooying flicker , exeption for weed button
-         document.addEventListener('click', (e) => {
+        //BOOM and stuff, scree shake on click (removed), check if numpad is open, to avoid anooying flicker , exeption for weed button
+        document.addEventListener('click', (e) => {
             if (!e.target.classList.contains('enemy') && !e.target.classList.contains('keypad-button') && e.target.id !== 'submit-button' && !e.target.classList.contains('turret') && e.target.id !== 'weedButton') {
                 let explosion = document.createElement('div');
                 explosion.className = 'explosion';
@@ -891,7 +921,7 @@
 
 
 
-       
+
 
         // Image explosions 
         document.querySelectorAll('img').forEach(img => {
@@ -1239,7 +1269,7 @@
             }
         }
 
-        
+
     </script>
 </body>
 
