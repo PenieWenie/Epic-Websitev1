@@ -253,6 +253,8 @@
             animation: explodeFade 1s forwards;
         }
 
+
+
         .enemy {
             position: absolute;
             width: 100px;
@@ -473,6 +475,48 @@
             display: none;
             z-index: 2000;
         }
+
+        #colorFilter {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(255, 0, 255, 0.3), rgba(0, 255, 0, 0.3), rgba(0, 0, 255, 0.3));
+            animation: colorShift 5s infinite;
+            pointer-events: none;
+            z-index: 100;
+            opacity: 0;
+            /* Start hidden with opacity */
+            transition: opacity 1s ease-in;
+            /* Fade in over 1 second */
+        }
+
+        #smokeOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('images/smoke.gif') center/cover no-repeat;
+            opacity: 0.3;
+            pointer-events: none;
+            z-index: 150;
+        }
+
+        @keyframes colorShift {
+            0% {
+                filter: hue-rotate(0deg);
+            }
+
+            50% {
+                filter: hue-rotate(180deg);
+            }
+
+            100% {
+                filter: hue-rotate(360deg);
+            }
+        }
     </style>
 </head>
 
@@ -508,6 +552,10 @@
     <audio id="bombSound">
         <source src="audio/bombSound.mp3" type="audio/mpeg">
     </audio>
+    <div id="weedButton" style="position: fixed; bottom: 10px; right: 10px; z-index: 200; cursor: pointer;">
+        <img src="images/weed.gif" alt="Smoke Weed" style="width: 50px; height: 50px;">
+    </div>
+    <div id="smokeOverlay" style="display: none;"></div>
     <div id="killDisplay">Enemies Killed: 0</div>
     <div id="virusDisplay">Viruses: 0</div>
     <div class="content">
@@ -548,6 +596,51 @@
         //wip ai shooting and shrapnel upgrades
         //major bugs, bomb/captcha will break site completley if left open and unsolved for too long. prev timer is not being deleted. ETA, when i am interested
         //hover over and clicking noises needed for qol
+
+        // Weed button logic
+        const weedButton = document.getElementById('weedButton');
+        const colorFilter = document.createElement('div');
+        colorFilter.id = 'colorFilter';
+        document.body.appendChild(colorFilter);
+        const smokeOverlay = document.getElementById('smokeOverlay');
+        const inhaleSound = new Audio('audio/inhale.mp3');
+        inhaleSound.preload = 'auto';
+        inhaleSound.volume = 1.0;
+
+        let isWeedActive = false;
+
+         //BOOM and stuff, scree shake on click (removed), check if numpad is open, to avoid anooying flicker , exeption for weed button
+         document.addEventListener('click', (e) => {
+            if (!e.target.classList.contains('enemy') && !e.target.classList.contains('keypad-button') && e.target.id !== 'submit-button' && !e.target.classList.contains('turret') && e.target.id !== 'weedButton') {
+                let explosion = document.createElement('div');
+                explosion.className = 'explosion';
+                explosion.style.left = `${e.pageX - 150}px`;
+                explosion.style.top = `${e.pageY - 150}px`;
+                document.body.appendChild(explosion);
+                setTimeout(() => explosion.remove(), 1000);
+
+                let boomClone = boomSound.cloneNode();
+                boomClone.volume = 0.8;
+                boomClone.play().catch(err => console.log("Sound blocked:", err));
+            }
+        });
+
+        weedButton.addEventListener('click', () => {
+            if (!isWeedActive) {
+                isWeedActive = true;
+                colorFilter.style.opacity = '1'; // Fade in filter
+                smokeOverlay.style.display = 'block'; // Fade in smoke to 70% opacity
+                epicAudio.playbackRate = 0.7;
+                inhaleSound.play().catch(err => console.log("Inhale sound blocked:", err));
+
+                setTimeout(() => {
+                    isWeedActive = false;
+                    colorFilter.style.opacity = '0'; // Fade out filter
+                    smokeOverlay.style.display = 'none'; // Fade out smoke
+                    epicAudio.playbackRate = 1.0;
+                }, 20000);
+            }
+        });
 
         //audio logic
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -797,21 +890,7 @@
 
 
 
-        //BOOM and stuff, scree shake on click (removed), check if numpad is open, to avoid anooying flicker 
-        document.addEventListener('click', (e) => {
-            if (!e.target.classList.contains('enemy') && !e.target.classList.contains('keypad-button') && e.target.id !== 'submit-button' && !e.target.classList.contains('turret')) {
-                let explosion = document.createElement('div');
-                explosion.className = 'explosion';
-                explosion.style.left = `${e.pageX - 150}px`;
-                explosion.style.top = `${e.pageY - 150}px`;
-                document.body.appendChild(explosion);
-                setTimeout(() => explosion.remove(), 1000);
-
-                let boomClone = boomSound.cloneNode();
-                boomClone.volume = 0.8;
-                boomClone.play().catch(err => console.log("Sound blocked:", err));
-            }
-        });
+       
 
         // Image explosions 
         document.querySelectorAll('img').forEach(img => {
